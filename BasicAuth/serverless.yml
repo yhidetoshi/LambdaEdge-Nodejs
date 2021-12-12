@@ -32,14 +32,14 @@ resources:
               Action: sts:AssumeRole
         Policies:
             - PolicyName: LambdaEdgeBasicAuth
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - "lambda:GetFunction"
-                    - "lambda:EnableReplication*"
-                    - "logs:CreateLogGroup"
-                    - "logs:CreateLogStream"
-                    - "logs:PutLogEvents"
-                  Resource: "*"
+              PolicyDocument:
+                Version: '2012-10-17'
+                Statement:
+                  - Effect: Allow
+                    Action:
+                      - "lambda:GetFunction"
+                      - "lambda:EnableReplication*"
+                      - "logs:CreateLogGroup"
+                      - "logs:CreateLogStream"
+                      - "logs:PutLogEvents"
+                    Resource: "*"

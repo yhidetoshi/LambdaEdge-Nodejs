@@ -13,14 +13,22 @@ var errorResponse = {
     },
 }
 
+var allowIp = ['X.X.X.X', 'X.X.X.X']
+
 var allowUsers = {
     "admin": "pass1",
     "dev": "pass2"
 }
 
+
 exports.handler = (event, context, callback) => {
     const request = event.Records[0].cf.request;
     const headers = request.headers;
+    const clientIp = request.clientIp
+
+    if (validateClientIp(clientIp)) {
+        callback(null, request)
+    }
 
     if (! typeof headers.authorization) {
         callback(null, errorResponse)
@@ -31,15 +39,30 @@ exports.handler = (event, context, callback) => {
 
     const requestUser = decodeAuth[0];
     const requestPassword = decodeAuth[1];
-
-    let exist_flag = false
-    for (let key in allowUsers) {
-        if (requestUser == key && requestPassword == allowUsers[key]) {
-            exist_flag = true
-            callback(null, request);
-        }
-    }
-    if (exist_flag == false) {
-        callback(null, errorResponse);
+    if (validateAuth(requestUser, requestPassword)) {
+        callback(null, request)
+    } else {
+        callback(null, errorResponse)
     }
 };
+
+function validateAuth(user, password) {
+    let exist_flag = false
+    for (let key in allowUsers) {
+        if (user === key && password === allowUsers[key]) {
+            exist_flag = true
+            return true;
+        }
+    }
+    if (exist_flag === false) {
+        return false;
+    }
+}
+
+function validateClientIp(clientIp) {
+    if (allowIp.indexOf(clientIp) !== -1) {
+        return true
+    } else {
+        return false
+    }
+}
