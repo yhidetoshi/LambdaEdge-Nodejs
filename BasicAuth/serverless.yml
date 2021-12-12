@@ -1,0 +1,45 @@
+service: basicauth
+frameworkVersion: ">=2.68.0"
+
+provider:
+  name: aws
+  stage: dev
+  runtime: nodejs14.x
+  region: us-east-1
+
+functions:
+  function:
+    handler: basicauth.handler
+    role: LambdaEdgeBasicAuth
+    timeout: 5
+    description: LambdaEdge Basic Auth Nodejs14.x
+    memorySize: 128
+
+resources:
+  Resources:
+    LambdaEdgeBasicAuth:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: LambdaEdgeBasicAuth
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+                  - edgelambda.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+           - PolicyName: LambdaEdgeBasicAuth
+             PolicyDocument:
+               Version: '2012-10-17'
+               Statement:
+                 - Effect: Allow
+                   Action:
+                     - "lambda:GetFunction"
+                     - "lambda:EnableReplication*" 
+                     - "logs:CreateLogGroup"
+                     - "logs:CreateLogStream"
+                     - "logs:PutLogEvents"
+                   Resource: "*"
