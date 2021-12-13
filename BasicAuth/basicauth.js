@@ -60,6 +60,7 @@ function validateAuth(user, password) {
 }
 
 function validateClientIp(clientIp) {
+    console.log(clientIp)
     if (allowIp.indexOf(clientIp) !== -1) {
         return true
     } else {
